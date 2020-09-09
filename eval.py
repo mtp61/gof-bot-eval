@@ -27,8 +27,10 @@ class Client:
         # load sessions
         self.sessions = self.loadSessions()
         if self.session_name in self.sessions.keys():
-            raise Exception(f"Existing session with name \"{ self.session_name }\"")
-        self.current_session = []
+            print(f"Existing session with name \"{ self.session_name }\"")
+            self.current_session = self.sessions[self.session_name]
+        else:
+            self.current_session = []
 
         # connect to server
         self.sio = socketio.Client()
@@ -47,7 +49,7 @@ class Client:
             if len(game_state['players']) == 4:
                 if not self.started:  # we are waiting for 4 players
                     print("4 players ready, starting game")
-                    startGame()
+                    self.startGame()
                     self.started = True
             else:
                 if self.started:
@@ -91,7 +93,7 @@ class Client:
             with open('sessions.json', 'r') as file:
                 sessions = json.loads(file.read())
         except IOError:
-            firstTimeSetup()
+            self.firstTimeSetup()
             sessions = {}
 
         return sessions
